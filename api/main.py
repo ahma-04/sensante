@@ -91,7 +91,8 @@ Sois rassurant mais recommande toujours
 une consultation medicale.
 Maximum 3 phrases.
 Ne fais JAMAIS de diagnostic toi-meme.
-Tu expliques uniquement le diagnostic fourni."""
+Tu expliques uniquement le diagnostic fourni.
+Termine TOUJOURS par : 'Ne prenez aucun medicament sans consulter un medecin ou un agent de sante qualifie.'"""
 
 # ── Endpoints ─────────────────────────────────────────────────────────────────
 @app.get("/health")

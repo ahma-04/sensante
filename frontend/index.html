@@ -260,6 +260,10 @@
         if (resp.ok) {
           const result = await resp.json();
           zone.innerHTML = `
+            <div class="mt-2 bg-red-50 rounded-lg p-3 border border-red-300 flex items-start gap-2">
+              <span class="text-red-500 font-bold text-base mt-0.5">⚠️</span>
+              <p class="text-red-700 text-xs leading-relaxed">Ce résultat est un pré-diagnostic automatique. Il <strong>ne remplace pas</strong> un examen médical. Consultez un professionnel de santé avant toute prise de médicament.</p>
+            </div>
             <div class="mt-2 bg-purple-50 rounded-lg p-4 border border-purple-200">
               <p class="text-sm text-purple-600 font-medium mb-2">Explication (Llama 3 via Groq)</p>
               <p class="text-gray-700 text-sm leading-relaxed">${result.explication}</p>
