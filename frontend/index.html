@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -433,3 +434,288 @@
 
 </body>
 </html>
+=======
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SénSanté – Pré-diagnostic</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.5} }
+    .animate-pulse { animation: pulse 2s cubic-bezier(.4,0,.6,1) infinite; }
+    .bar-fill { transition: width 0.8s ease-in-out; }
+  </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+
+  <!-- Header -->
+  <header class="bg-green-700 text-white py-4 shadow-md">
+    <div class="max-w-2xl mx-auto px-4 flex items-center gap-3">
+      <span class="text-3xl">🏥</span>
+      <div>
+        <h1 class="text-2xl font-bold">SénSanté</h1>
+        <p class="text-green-200 text-sm">Système de pré-diagnostic – ESP/UCAD</p>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-2xl mx-auto px-4 py-8 space-y-6">
+
+    <!-- Formulaire patient -->
+    <section class="bg-white rounded-2xl shadow p-6">
+      <h2 class="text-lg font-semibold text-gray-800 mb-4">Informations du patient</h2>
+      <div class="grid grid-cols-2 gap-4">
+
+        <div>
+          <label class="block text-sm font-medium text-gray-600 mb-1">Âge</label>
+          <input id="age" type="number" min="0" max="120" value="28"
+            class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-green-400 outline-none" />
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-600 mb-1">Sexe</label>
+          <select id="sexe" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-green-400 outline-none">
+            <option value="F">Femme</option>
+            <option value="M">Homme</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-600 mb-1">Température (°C)</label>
+          <input id="temperature" type="number" step="0.1" min="35" max="45" value="39.5"
+            class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-green-400 outline-none" />
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-600 mb-1">Tension (mmHg)</label>
+          <input id="tension" type="number" min="50" max="200" value="110"
+            class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-green-400 outline-none" />
+        </div>
+
+        <div class="col-span-2">
+          <label class="block text-sm font-medium text-gray-600 mb-1">Région</label>
+          <select id="region" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-green-400 outline-none">
+            <option>Dakar</option>
+            <option>Thies</option>
+            <option>Ziguinchor</option>
+            <option>Saint-Louis</option>
+            <option>Kaolack</option>
+            <option>Diourbel</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Symptômes -->
+      <div class="mt-4">
+        <p class="text-sm font-medium text-gray-600 mb-2">Symptômes</p>
+        <div class="grid grid-cols-3 gap-2">
+          <label class="flex items-center gap-2 text-sm cursor-pointer">
+            <input id="toux" type="checkbox" class="rounded accent-green-600" /> Toux
+          </label>
+          <label class="flex items-center gap-2 text-sm cursor-pointer">
+            <input id="fatigue" type="checkbox" checked class="rounded accent-green-600" /> Fatigue
+          </label>
+          <label class="flex items-center gap-2 text-sm cursor-pointer">
+            <input id="maux_tete" type="checkbox" checked class="rounded accent-green-600" /> Maux de tête
+          </label>
+          <label class="flex items-center gap-2 text-sm cursor-pointer">
+            <input id="frissons" type="checkbox" checked class="rounded accent-green-600" /> Frissons
+          </label>
+          <label class="flex items-center gap-2 text-sm cursor-pointer">
+            <input id="courbatures" type="checkbox" class="rounded accent-green-600" /> Courbatures
+          </label>
+          <label class="flex items-center gap-2 text-sm cursor-pointer">
+            <input id="nausees" type="checkbox" class="rounded accent-green-600" /> Nausées
+          </label>
+        </div>
+      </div>
+
+      <button id="btn-diagnostiquer"
+        onclick="diagnostiquer()"
+        class="mt-6 w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-3 rounded-xl transition-colors text-sm">
+        Diagnostiquer
+      </button>
+    </section>
+
+    <!-- Section résultat (cachée au départ) -->
+    <section id="result-section" class="hidden">
+      <div class="bg-white rounded-2xl shadow p-6 space-y-4">
+
+        <h2 class="text-lg font-semibold text-gray-800">Résultat du pré-diagnostic</h2>
+
+        <!-- Diagnostic principal -->
+        <div id="diag-box" class="rounded-xl border-2 p-4 text-center">
+          <p id="diag-label" class="text-2xl font-bold uppercase tracking-wide"></p>
+          <p id="diag-meta" class="text-sm text-gray-500 mt-1"></p>
+        </div>
+
+        <!-- Barre de probabilité -->
+        <div>
+          <div class="flex justify-between text-xs text-gray-500 mb-1">
+            <span>Confiance du modèle</span>
+            <span id="prob-pct"></span>
+          </div>
+          <div class="w-full bg-gray-200 rounded-full h-3">
+            <div id="prob-bar" class="h-3 rounded-full bar-fill bg-green-500" style="width:0%"></div>
+          </div>
+        </div>
+
+        <!-- Toutes les probabilités -->
+        <div id="all-probs" class="grid grid-cols-2 gap-2 text-sm text-gray-600"></div>
+
+        <!-- Zone explication LLM -->
+        <div id="explication-zone"></div>
+
+        <!-- Avertissement -->
+        <p class="text-xs text-gray-400 text-center italic">
+          Ce pré-diagnostic ne remplace pas un avis médical qualifié.
+        </p>
+      </div>
+    </section>
+
+  </main>
+
+  <script>
+    const API_URL = "http://localhost:8000";
+
+    const DIAG_COLORS = {
+      palu:   { border: "border-red-400",    bg: "bg-red-50",    text: "text-red-700",    bar: "bg-red-500"    },
+      grippe: { border: "border-orange-400", bg: "bg-orange-50", text: "text-orange-700", bar: "bg-orange-500" },
+      typh:   { border: "border-yellow-400", bg: "bg-yellow-50", text: "text-yellow-700", bar: "bg-yellow-500" },
+      sain:   { border: "border-green-400",  bg: "bg-green-50",  text: "text-green-700",  bar: "bg-green-500"  },
+    };
+
+    const DIAG_LABELS = {
+      palu:   "Paludisme",
+      grippe: "Grippe",
+      typh:   "Typhoïde",
+      sain:   "Patient sain",
+    };
+
+    async function diagnostiquer() {
+      const btn = document.getElementById("btn-diagnostiquer");
+      btn.disabled = true;
+      btn.textContent = "Analyse en cours...";
+
+      const payload = {
+        age:         parseInt(document.getElementById("age").value),
+        sexe:        document.getElementById("sexe").value,
+        region:      document.getElementById("region").value,
+        temperature: parseFloat(document.getElementById("temperature").value),
+        tension:     parseInt(document.getElementById("tension").value),
+        toux:        document.getElementById("toux").checked ? 1 : 0,
+        fatigue:     document.getElementById("fatigue").checked ? 1 : 0,
+        maux_tete:   document.getElementById("maux_tete").checked ? 1 : 0,
+        frissons:    document.getElementById("frissons").checked ? 1 : 0,
+        courbatures: document.getElementById("courbatures").checked ? 1 : 0,
+        nausees:     document.getElementById("nausees").checked ? 1 : 0,
+      };
+
+      try {
+        const resp = await fetch(API_URL + "/predict", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+        if (!resp.ok) throw new Error("Erreur API");
+        const result = await resp.json();
+        afficherResultat(result, payload);
+      } catch (err) {
+        alert("Erreur de connexion à l'API : " + err.message);
+      } finally {
+        btn.disabled = false;
+        btn.textContent = "Diagnostiquer";
+      }
+    }
+
+    function afficherResultat(r, payload) {
+      const section = document.getElementById("result-section");
+      section.classList.remove("hidden");
+
+      const colors = DIAG_COLORS[r.diagnostic] || DIAG_COLORS.sain;
+      const label  = DIAG_LABELS[r.diagnostic]  || r.diagnostic;
+
+      // Boîte diagnostic
+      const box = document.getElementById("diag-box");
+      box.className = `rounded-xl border-2 p-4 text-center ${colors.border} ${colors.bg}`;
+      document.getElementById("diag-label").className = `text-2xl font-bold uppercase tracking-wide ${colors.text}`;
+      document.getElementById("diag-label").textContent = label;
+      document.getElementById("diag-meta").textContent =
+        `Probabilité : ${(r.probabilite * 100).toFixed(0)}%  —  Confiance : ${r.confiance}`;
+
+      // Barre
+      document.getElementById("prob-pct").textContent = (r.probabilite * 100).toFixed(0) + "%";
+      const bar = document.getElementById("prob-bar");
+      bar.className = `h-3 rounded-full bar-fill ${colors.bar}`;
+      setTimeout(() => bar.style.width = (r.probabilite * 100).toFixed(1) + "%", 50);
+
+      // Toutes les probas
+      const allDiv = document.getElementById("all-probs");
+      allDiv.innerHTML = "";
+      for (const [cls, prob] of Object.entries(r.toutes_probabilites)) {
+        allDiv.innerHTML += `
+          <div class="flex items-center gap-2">
+            <span class="w-20 text-xs font-medium">${DIAG_LABELS[cls] || cls}</span>
+            <div class="flex-1 bg-gray-100 rounded-full h-2">
+              <div class="h-2 rounded-full bg-gray-400" style="width:${(prob*100).toFixed(1)}%"></div>
+            </div>
+            <span class="text-xs w-8 text-right">${(prob*100).toFixed(0)}%</span>
+          </div>`;
+      }
+
+      // Explication LLM
+      demanderExplication(r, payload);
+
+      section.scrollIntoView({ behavior: "smooth" });
+    }
+
+    async function demanderExplication(diagnostic_data, payload) {
+      const explainData = {
+        diagnostic:  diagnostic_data.diagnostic,
+        probabilite: diagnostic_data.probabilite,
+        age:         parseInt(document.getElementById("age").value),
+        sexe:        document.getElementById("sexe").value,
+        temperature: parseFloat(document.getElementById("temperature").value),
+        region:      document.getElementById("region").value,
+      };
+
+      const zone = document.getElementById("explication-zone");
+      zone.innerHTML = `
+        <div class="mt-2 bg-purple-50 rounded-lg p-4 border border-purple-200">
+          <p class="text-sm text-purple-600 font-medium mb-2">Explication (Llama 3 via Groq)</p>
+          <p class="text-gray-500 text-sm animate-pulse">Génération en cours…</p>
+        </div>`;
+
+      try {
+        const resp = await fetch(API_URL + "/explain", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(explainData)
+        });
+        if (resp.ok) {
+          const result = await resp.json();
+          zone.innerHTML = `
+            <div class="mt-2 bg-red-50 rounded-lg p-3 border border-red-300 flex items-start gap-2">
+              <span class="text-red-500 font-bold text-base mt-0.5">⚠️</span>
+              <p class="text-red-700 text-xs leading-relaxed">Ce résultat est un pré-diagnostic automatique. Il <strong>ne remplace pas</strong> un examen médical. Consultez un professionnel de santé avant toute prise de médicament.</p>
+            </div>
+            <div class="mt-2 bg-purple-50 rounded-lg p-4 border border-purple-200">
+              <p class="text-sm text-purple-600 font-medium mb-2">Explication (Llama 3 via Groq)</p>
+              <p class="text-gray-700 text-sm leading-relaxed">${result.explication}</p>
+              <p class="text-xs text-purple-400 mt-2">Modèle : ${result.modele_llm}</p>
+            </div>`;
+        }
+      } catch {
+        zone.innerHTML = `
+          <div class="mt-2 bg-gray-50 rounded-lg p-3">
+            <p class="text-gray-400 text-sm">Explication non disponible.</p>
+          </div>`;
+      }
+    }
+  </script>
+
+</body>
+</html>
+>>>>>>> 98dbce0c38a598024846676fd0c80a6f1de1f03a

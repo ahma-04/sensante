@@ -1,19 +1,23 @@
-# .gitignore- Fichiers a ne PAS versionner
-# Environnement Python
+# Cles API - NE JAMAIS COMMITTER
+.env
+
+# Python
+venv/
 __pycache__/
 *.pyc
-venv/
-.env
-# Modele ML (trop gros pour GitHub)
-models/*.pkl
-# Fichiers OS
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+dist/
+build/
+
+# Modeles (trop lourds pour git)
+# models/*.pkl
+
+# Jupyter
+.ipynb_checkpoints/
+
+# OS
 .DS_Store
 Thumbs.db
-# IDE
-.vscode/
-.idea/
-
-
-# Fichiers temporaires matplotlib
-*.png
-!figures/*.png

@@ -1,5 +1,6 @@
 # notebooks/test_groq.py
 # Test de l'API Groq avec Llama 3
+
 import os
 from dotenv import load_dotenv
 from groq import Groq
@@ -8,14 +9,18 @@ from groq import Groq
 load_dotenv()
 api_key = os.getenv("GROQ_API_KEY")
 
-if not api_key:
+if not api_key or api_key == "gsk_votre_cle_ici":
     print("ERREUR : GROQ_API_KEY non trouvee dans .env")
     exit()
 
 # Creer le client Groq
 client = Groq(api_key=api_key)
 
-# Premier appel : question simple
+# ── Test 1 : question simple ─────────────────────────────────────────────────
+print("=" * 50)
+print("Test 1 : Question simple sur le paludisme")
+print("=" * 50)
+
 response = client.chat.completions.create(
     model="llama-3.1-8b-instant",
     messages=[
@@ -24,17 +29,21 @@ response = client.chat.completions.create(
                     "Reponds en francais simple. "
                     "Maximum 3 phrases."},
         {"role": "user",
-         "content": "Quels sont les symptomes du paludisme?"}
+         "content": "Quels sont les symptomes du paludisme ?"}
     ],
     max_tokens=200,
     temperature=0.3
 )
 
-# Afficher la reponse
 print("=== Reponse de Llama 3 ===")
 print(response.choices[0].message.content)
 print(f"\nTokens utilises : {response.usage.total_tokens}")
-# Test avec le format SenSante
+
+# ── Test 2 : format SénSanté ─────────────────────────────────────────────────
+print("\n" + "=" * 50)
+print("Test 2 : Explication SenSante (diagnostic palu 72%)")
+print("=" * 50)
+
 response2 = client.chat.completions.create(
     model="llama-3.1-8b-instant",
     messages=[
@@ -55,5 +64,7 @@ Explique ce resultat au patient."""}
     max_tokens=200,
     temperature=0.3
 )
+
 print("=== Explication SenSante ===")
 print(response2.choices[0].message.content)
+print(f"\nTokens utilises : {response2.usage.total_tokens}")
