@@ -7,11 +7,29 @@ from reportlab.lib.units import cm
 from reportlab.lib import colors
 from reportlab.platypus import (
     SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle,
-    HRFlowable, KeepTogether
+    HRFlowable, KeepTogether, Image
 )
 from reportlab.lib.enums import TA_CENTER, TA_LEFT, TA_JUSTIFY
 
 OUTPUT = "rapport_lab5_LLM_Groq.pdf"
+
+SCREENSHOTS = {
+    "formulaire": r"C:\Users\LENOVO\Pictures\Screenshots\Capture d'écran 2026-05-12 151055.png",
+    "exo1":       r"C:\Users\LENOVO\Pictures\Screenshots\Capture d'écran 2026-05-12 151322.png",
+    "exo2":       r"C:\Users\LENOVO\Pictures\Screenshots\Capture d'écran 2026-05-12 151402.png",
+    "exo3":       r"C:\Users\LENOVO\Pictures\Screenshots\Capture d'écran 2026-05-12 151500.png",
+}
+
+def screenshot(key, width=15*cm, caption=None):
+    """Retourne une Image + légende pour le rapport."""
+    from PIL import Image as PILImage
+    with PILImage.open(SCREENSHOTS[key]) as im:
+        orig_w, orig_h = im.size
+    height = width * orig_h / orig_w
+    items = [Image(SCREENSHOTS[key], width=width, height=height)]
+    if caption:
+        items.append(Paragraph(caption, S["caption"]))
+    return items
 
 doc = SimpleDocTemplate(
     OUTPUT, pagesize=A4,
@@ -363,6 +381,9 @@ story += [
         "puis l'explication Llama 3 apparaît 1-2 secondes plus tard. Ce pattern ne bloque "
         "pas l'interface utilisateur.", S["body"]),
     Spacer(1, 0.3*cm),
+    Paragraph("<b>Capture — Formulaire SénSanté (localhost:3000) :</b>", S["h2"]),
+] + screenshot("formulaire", caption="Figure : Interface SénSanté — formulaire patient prêt pour le diagnostic.") + [
+    Spacer(1, 0.3*cm),
 ]
 
 # ══════════════════════════════════════════════════════════════════════════════
@@ -557,6 +578,7 @@ story += [
         "(paludisme, typhoïde), le modèle manque de vocabulaire wolof et reste en français. "
         "La cohérence du mélange est meilleure sur les cas simples (patient sain) que sur "
         "les cas complexes (paludisme, typhoïde).", S["body"]),
+] + screenshot("exo1", caption="Figure Exercice 1 : Résultats du script exercice1_wolof.py — 3 cas testés (palu, sain, typhoïde).") + [
     Spacer(1, 0.4*cm),
 
     # ── Exercice 2 ────────────────────────────────────────────────────────────
@@ -602,6 +624,7 @@ story += [
         "fortement entre deux appels - trop creative pour un contexte medical. "
         "La valeur <b>temperature=0.3</b> retenue dans SenSante offre le meilleur "
         "equilibre entre stabilite factuelle et fluidite naturelle.", S["body"]),
+] + screenshot("exo2", caption="Figure Exercice 2 : Comparaison des réponses Llama 3 avec temperature=0.0, 0.5 et 1.0.") + [
     Spacer(1, 0.4*cm),
 
     # ── Exercice 3 ────────────────────────────────────────────────────────────
@@ -656,6 +679,7 @@ story += [
         "d'automédication. Le bandeau rouge est visible avant même de lire l'explication, "
         "et le LLM rappelle lui-même l'interdiction de prendre des médicaments sans consultation.",
         S["ok"]),
+] + screenshot("exo3", caption="Figure Exercice 3 : Résultat du diagnostic avec bandeau ⚠️ rouge et explication Llama 3 (Exercice 3 — modification éthique appliquée).") + [
     Spacer(1, 0.3*cm),
 ]
 
